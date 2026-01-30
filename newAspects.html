@@ -1,346 +1,422 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Aspect Cards — Prototype</title>
-<style>
-  :root{
-    --card-bg:#231f20;
-    --text:#e6e2df;
-    --muted:#bdb6b1;
-    --accent-void: #3b0fa0;    /* purple */
-    --accent-solar: #d75a00;   /* orange */
-    --card-width: 380px;
-    --radius:8px;
-    --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aspect Cards — Prototype</title>
+  <style>
+    :root {
+      --card-bg: #231f20;
+      --text: #e6e2df;
+      --muted: #bdb6b1;
+      --accent-void: #3b0fa0;
+      /* purple */
+      --accent-solar: #d75a00;
+      /* orange */
+      --card-width: 380px;
+      --radius: 8px;
+      --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
 
-  body{
-    font-family:var(--font-sans);
-    background: linear-gradient(180deg,#0f0f11 0%, #151516 70%);
-    color:var(--text);
-    margin:24px;
-    display:flex;
-    gap:20px;
-    flex-wrap:wrap;
-    justify-content:center;
-    align-items:flex-start;
-  }
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(180deg, #0f0f11 0%, #151516 70%);
+      color: var(--text);
+      margin: 24px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-  /* Card container */
-  .aspect-card{
-    width:var(--card-width);
-    background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
-    border-radius:var(--radius);
-    overflow:hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-    border:1px solid rgba(255,255,255,0.03);
-  }
+    /* Card container */
+    .aspect-card {
+      width: var(--card-width);
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.6));
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
 
-  /* Header strip */
-  .header{
-    padding:18px 20px 16px 20px;
-    background-color: rgba(0,0,0,0.35);
-  }
-  .title{
-    margin:0;
-    font-size:28px;
-    letter-spacing:0.5px;
-    font-weight:700;
-  }
-  .sub{
-    margin:4px 0 0 0;
-    color:var(--muted);
-    font-size:14px;
-    font-weight:500;
-  }
+    /* Header strip */
+    .header {
+      padding: 18px 20px 16px 20px;
+      background-color: rgba(0, 0, 0, 0.35);
+    }
 
-  /* Banner artwork */
-  .banner{
-    height:160px;
-    width:100%;
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-  }
-  .banner .art{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-  }
-  /* simple overlay to match game aesthetic */
-  .banner::after{
-    content:"";
-    position:absolute;
-    left:0;right:0;top:0;bottom:0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.25));
-    pointer-events:none;
-  }
+    .title {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
 
-  /* fragment slots row */
-  .slots{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 18px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
-    gap:8px;
-  }
-  .slots .label{
-    font-size:18px;
-    font-weight:600;
-  }
-  .slot-icons{
-    display:flex;
-    gap:8px;
-  }
-  .slot{
-    width:34px;height:34px;border-radius:6px;
-    border:1px solid rgba(255,255,255,0.06);
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(255,255,255,0.02);
-    font-size:14px;color:var(--muted);
-  }
+    .sub {
+      margin: 4px 0 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
 
-  /* description area */
-  .desc{
-    padding:18px;
-    color:var(--muted);
-    line-height:1.45;
-  }
-  .flavor{
-    font-style:italic;
-    color:rgba(255,255,255,0.85);
-    margin-bottom:10px;
-    font-size:15px;
-  }
-  .bullet{
-    margin-top:10px;
-    display:flex;
-    gap:12px;
-    align-items:flex-start;
-  }
-  .bullet .icon{
-    width:22px;height:22px;border-radius:4px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(255,255,255,0.03);
-    color:var(--text);
-  }
-  .bullet p{ margin:0; color:var(--text); font-size:15px; }
+    /* Banner artwork */
+    .banner {
+      height: 160px;
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-  .divider{
-    height:1px;background:rgba(255,255,255,0.03);margin:14px 0;
-  }
+    .banner .art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-  /* apply button area */
-  .apply-row{
-    display:flex;
-    justify-content:flex-end;
-    align-items:center;
-    padding:14px 18px 18px 18px;
-  }
-  .apply{
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    background:transparent;
-    color:var(--text);
-    border-radius:20px;
-    padding:8px 12px;
-    font-weight:700;
-    font-size:16px;
-    cursor:pointer;
-    border:1px solid rgba(255,255,255,0.04);
-  }
-  .apply .btn-circle{
-    width:28px;height:28px;border-radius:50%;
-    display:inline-flex;align-items:center;justify-content:center;
-    background:rgba(0,0,0,0.35);
-    border:1px solid rgba(255,255,255,0.04);
-    font-weight:700;
-  }
+    /* simple overlay to match game aesthetic */
+    .banner::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.25));
+      pointer-events: none;
+    }
 
-  /* Accent themes */
-  .aspect-void .header{ background: linear-gradient(90deg, rgba(59,15,160,0.95), rgba(59,15,160,0.85)); }
-  .aspect-void .banner{ background: radial-gradient(closest-side, rgba(75,20,175,0.8), rgba(25,5,70,0.6)); }
-  .aspect-void .slot, .aspect-void .bullet .icon{ background: linear-gradient(180deg, rgba(90,40,200,0.18), rgba(30,10,80,0.18)); color:#efe8ff;}
-  .aspect-void .apply .btn-circle{ background: linear-gradient(180deg, rgba(85,40,200,0.12), rgba(30,10,80,0.12)); }
+    /* fragment slots row */
+    .slots {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.05));
+      gap: 8px;
+    }
 
-  .aspect-solar .header{ background: linear-gradient(90deg, rgba(215,90,0,0.95), rgba(200,70,0,0.9)); }
-  .aspect-solar .banner{ background: radial-gradient(closest-side, rgba(255,200,110,0.9), rgba(160,60,0,0.6)); }
-  .aspect-solar .slot, .aspect-solar .bullet .icon{ background: linear-gradient(180deg, rgba(255,190,110,0.12), rgba(120,60,0,0.08)); color:#fff1e6; }
-  .aspect-solar .apply .btn-circle{ background: linear-gradient(180deg, rgba(255,190,110,0.12), rgba(120,60,0,0.08)); }
+    .slots .label {
+      font-size: 18px;
+      font-weight: 600;
+    }
 
-  /* Artwork placeholders: center svg scaled */
-  .art-svg{
-    width:46%;
-    max-width:240px;
-    height:auto;
-    opacity:0.98;
-  }
+    .slot-icons {
+      display: flex;
+      gap: 8px;
+    }
 
-  /* small responsive tweaks */
-  @media (max-width:420px){
-    :root{ --card-width:92vw; }
-    .banner{ height:140px; }
-  }
-</style>
+    .slot {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* description area */
+    .desc {
+      padding: 18px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .flavor {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .bullet {
+      margin-top: 10px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .bullet .icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+    }
+
+    .bullet p {
+      margin: 0;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.03);
+      margin: 14px 0;
+    }
+
+    /* apply button area */
+    .apply-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 14px 18px 18px 18px;
+    }
+
+    .apply {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--text);
+      border-radius: 20px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .apply .btn-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-weight: 700;
+    }
+
+    /* Accent themes */
+    .aspect-void .header {
+      background: linear-gradient(90deg, rgba(59, 15, 160, 0.95), rgba(59, 15, 160, 0.85));
+    }
+
+    .aspect-void .banner {
+      background: radial-gradient(closest-side, rgba(75, 20, 175, 0.8), rgba(25, 5, 70, 0.6));
+    }
+
+    .aspect-void .slot,
+    .aspect-void .bullet .icon {
+      background: linear-gradient(180deg, rgba(90, 40, 200, 0.18), rgba(30, 10, 80, 0.18));
+      color: #efe8ff;
+    }
+
+    .aspect-void .apply .btn-circle {
+      background: linear-gradient(180deg, rgba(85, 40, 200, 0.12), rgba(30, 10, 80, 0.12));
+    }
+
+    .aspect-solar .header {
+      background: linear-gradient(90deg, rgba(215, 90, 0, 0.95), rgba(200, 70, 0, 0.9));
+    }
+
+    .aspect-solar .banner {
+      background: radial-gradient(closest-side, rgba(255, 200, 110, 0.9), rgba(160, 60, 0, 0.6));
+    }
+
+    .aspect-solar .slot,
+    .aspect-solar .bullet .icon {
+      background: linear-gradient(180deg, rgba(255, 190, 110, 0.12), rgba(120, 60, 0, 0.08));
+      color: #fff1e6;
+    }
+
+    .aspect-solar .apply .btn-circle {
+      background: linear-gradient(180deg, rgba(255, 190, 110, 0.12), rgba(120, 60, 0, 0.08));
+    }
+
+    /* Artwork placeholders: center svg scaled */
+    .art-svg {
+      width: 46%;
+      max-width: 240px;
+      height: auto;
+      opacity: 0.98;
+    }
+
+    .banner img {
+      max-width: 60%;
+      max-height: 80%;
+      object-fit: contain;
+      display: block;
+
+      /* small responsive tweaks */
+      @media (max-width:420px) {
+        :root {
+          --card-width: 92vw;
+        }
+
+        .banner {
+          height: 140px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .banner img {
+          max-width: 60%;
+          max-height: 80%;
+          object-fit: contain;
+        }
+      }
+  </style>
 </head>
+
 <body>
 
-<!-- Event Horizon (Void) -->
-<article class="aspect-card aspect-void" aria-labelledby="evh-title">
-  <header class="header">
-    <h1 id="evh-title" class="title">EVENT HORIZON</h1>
-    <div class="sub">Void Aspect</div>
-  </header>
+  <!-- Event Horizon (Void) -->
+  <article class="aspect-card aspect-void" aria-labelledby="evh-title">
+    <header class="header">
+      <h1 id="evh-title" class="title">GRAVITAS</h1>
+      <div class="sub">Void Aspect</div>
+    </header>
 
-  <div class="banner" role="img" aria-label="Void vortex artwork">
-    <!-- stylized vortex SVG -->
-    <svg class="art-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <radialGradient id="vg" cx="45%" cy="45%">
-          <stop offset="0%" stop-color="#6f2eff"/>
-          <stop offset="60%" stop-color="#4b0faf"/>
-          <stop offset="100%" stop-color="#18042f"/>
-        </radialGradient>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#vg)"/>
-      <g fill="none" stroke="#b993ff" stroke-opacity="0.85" stroke-width="2">
-        <path d="M100,20 C120,35 140,50 140,80 C140,110 110,130 100,150 C90,130 60,110 60,80 C60,50 80,35 100,20Z" />
-        <path d="M100,40 C115,52 130,68 130,88 C130,108 110,118 100,130 C90,118 70,108 70,88 C70,68 85,52 100,40Z" stroke-opacity="0.6"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="slots">
-    <div class="label">Fragment Slots (2)</div>
-    <div class="slot-icons">
-      <div class="slot">◻</div>
-      <div class="slot">◻</div>
+    <div class="banner" role="img" aria-label="Void vortex artwork">
+      <!-- stylized vortex SVG -->
+      <img src="assets/void_apple.png" alt="Void Aspect Apple Artwork" />
     </div>
-  </div>
 
-  <div class="desc">
-    <p class="flavor">Dive towards the ground. This dive will pull any nearby airborne or knocked up enemies to the ground dealing heavy damage and suppressing them.</p>
-    <div class="divider"></div>
-    <div class="bullet">
-      <div class="icon">◎</div>
-      <p>Non-airborne targets that are Void-debuffed will also be damaged and suppressed.</p>
+    <div class="slots">
+      <div class="label">Fragment Slots (2)</div>
+      <div class="slot-icons">
+        <div class="slot">◻</div>
+        <div class="slot">◻</div>
+      </div>
     </div>
-  </div>
+
+    <div class="desc">
+      <p class="flavor">Dive towards the ground. This dive will pull any nearby airborne or knocked up enemies to the
+        ground dealing heavy damage and suppressing them.</p>
+      <div class="divider"></div>
+      <div class="bullet">
+        <div class="icon">◎</div>
+        <p>Non-airborne targets that are Void-debuffed will also be damaged and suppressed.</p>
+      </div>
+    </div>
 
 
-</article>
+  </article>
 
-<!-- Luminary Seeker (Solar) -->
-<article class="aspect-card aspect-solar" aria-labelledby="lumn-title">
-  <header class="header">
-    <h1 id="lumn-title" class="title">LUMINARY SEEKER</h1>
-    <div class="sub">Solar Aspect</div>
-  </header>
+  <!-- Luminary Seeker (Solar) -->
+  <article class="aspect-card aspect-solar" aria-labelledby="lumn-title">
+    <header class="header">
+      <h1 id="lumn-title" class="title">LUMINARY SEEKER</h1>
+      <div class="sub">Solar Aspect</div>
+    </header>
 
-  <div class="banner" role="img" aria-label="Sunseed emerging artwork">
-    <!-- sun-seed per your request: seed emerging from earth -->
-    <svg class="art-svg" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <radialGradient id="sg" cx="45%" cy="35%">
-          <stop offset="0%" stop-color="#fff1c4"/>
-          <stop offset="35%" stop-color="#ffd27a"/>
-          <stop offset="100%" stop-color="#bf5a00"/>
-        </radialGradient>
-      </defs>
+    <div class="banner" role="img" aria-label="Sunseed emerging artwork">
+      <!-- sun-seed per your request: seed emerging from earth -->
+      <svg class="art-svg" viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="sg" cx="45%" cy="35%">
+            <stop offset="0%" stop-color="#fff1c4" />
+            <stop offset="35%" stop-color="#ffd27a" />
+            <stop offset="100%" stop-color="#bf5a00" />
+          </radialGradient>
+        </defs>
 
-      <rect width="100%" height="100%" fill="#8a3b05" opacity="0.12"/>
-      <g transform="translate(150,80)">
-        <!-- mound / ground -->
-        <ellipse cx="0" cy="50" rx="120" ry="30" fill="#3f1f0f" opacity="0.35"/>
-        <!-- seed petals -->
-        <g transform="scale(0.8)">
-          <path d="M0,-20 C28,-30 40,-10 40,18 C40,48 20,56 0,56 C-20,56 -40,48 -40,18 C-40,-10 -28,-30 0,-20Z"
-            fill="url(#sg)" stroke="#ffdf9a" stroke-opacity="0.2" stroke-width="1.5"/>
-          <circle cx="0" cy="10" r="8" fill="#fff1c4" opacity="0.98"/>
+        <rect width="100%" height="100%" fill="#8a3b05" opacity="0.12" />
+        <g transform="translate(150,80)">
+          <!-- mound / ground -->
+          <ellipse cx="0" cy="50" rx="120" ry="30" fill="#3f1f0f" opacity="0.35" />
+          <!-- seed petals -->
+          <g transform="scale(0.8)">
+            <path d="M0,-20 C28,-30 40,-10 40,18 C40,48 20,56 0,56 C-20,56 -40,48 -40,18 C-40,-10 -28,-30 0,-20Z"
+              fill="url(#sg)" stroke="#ffdf9a" stroke-opacity="0.2" stroke-width="1.5" />
+            <circle cx="0" cy="10" r="8" fill="#fff1c4" opacity="0.98" />
+          </g>
         </g>
-      </g>
-    </svg>
-  </div>
-
-  <div class="slots">
-    <div class="label">Fragment Slots (2)</div>
-    <div class="slot-icons">
-      <div class="slot">◻</div>
-      <div class="slot">◻</div>
+      </svg>
     </div>
-  </div>
 
-  <div class="desc">
-    <p class="flavor">Ancient solar orbs lie buried beneath our feet. Dig them up to permanently enhance yourself.</p>
-    <div class="divider"></div>
-
-    <div class="bullet">
-      <div class="icon">☼</div>
-      <p>Shoot mounds containing Sunseeds to unearth them. Collect Sunseeds for 2× Cure and a stack of Vision (stacks up to 10).</p>
+    <div class="slots">
+      <div class="label">Fragment Slots (2)</div>
+      <div class="slot-icons">
+        <div class="slot">◻</div>
+        <div class="slot">◻</div>
+      </div>
     </div>
-    <div class="bullet" style="margin-top:12px;">
-      <div class="icon">▲</div>
-      <p>Firesprite and Ammo Brick pickups now grant Cure.</p>
+
+    <div class="desc">
+      <p class="flavor">Ancient solar orbs lie buried beneath our feet. Dig them up to permanently enhance yourself.</p>
+      <div class="divider"></div>
+
+      <div class="bullet">
+        <div class="icon">☼</div>
+        <p>Shoot mounds containing Sunseeds to unearth them. Collect Sunseeds for 2× Cure and a stack of Vision (stacks
+          up to 10).</p>
+      </div>
+      <div class="bullet" style="margin-top:12px;">
+        <div class="icon">▲</div>
+        <p>Firesprite and Ammo Brick pickups now grant Cure.</p>
+      </div>
     </div>
-  </div>
 
-</article>
+  </article>
 
-<!-- Eternal Forge (Solar) -->
-<article class="aspect-card aspect-solar" aria-labelledby="forge-title">
-  <header class="header">
-    <h1 id="forge-title" class="title">ETERNAL FORGE</h1>
-    <div class="sub">Solar Aspect</div>
-  </header>
+  <!-- Eternal Forge (Solar) -->
+  <article class="aspect-card aspect-solar" aria-labelledby="forge-title">
+    <header class="header">
+      <h1 id="forge-title" class="title">ETERNAL FORGE</h1>
+      <div class="sub">Solar Aspect</div>
+    </header>
 
-  <div class="banner" role="img" aria-label="Hammer and ignition artwork">
-    <!-- hammer & forge swirl -->
-    <svg class="art-svg" viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <radialGradient id="fg" cx="40%" cy="40%">
-          <stop offset="0%" stop-color="#fff6d8"/>
-          <stop offset="40%" stop-color="#ffbf6a"/>
-          <stop offset="100%" stop-color="#a94b00"/>
-        </radialGradient>
-      </defs>
+    <div class="banner" role="img" aria-label="Hammer and ignition artwork">
+      <!-- hammer & forge swirl -->
+      <svg class="art-svg" viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="fg" cx="40%" cy="40%">
+            <stop offset="0%" stop-color="#fff6d8" />
+            <stop offset="40%" stop-color="#ffbf6a" />
+            <stop offset="100%" stop-color="#a94b00" />
+          </radialGradient>
+        </defs>
 
-      <rect width="100%" height="100%" fill="#6a2d04" opacity="0.10"/>
-      <g transform="translate(40,18) scale(1.1)">
-        <!-- hammer head -->
-        <rect x="130" y="18" width="52" height="22" rx="3" ry="3" fill="#2a1b17" stroke="#3e1f0f" />
-        <!-- handle -->
-        <rect x="90" y="30" width="10" height="80" rx="5" ry="5" fill="#3b2a24" />
-        <!-- glow behind -->
-        <circle cx="70" cy="60" r="38" fill="url(#fg)" opacity="0.95"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="slots">
-    <div class="label">Fragment Slots (2)</div>
-    <div class="slot-icons">
-      <div class="slot">◻</div>
-      <div class="slot">◻</div>
+        <rect width="100%" height="100%" fill="#6a2d04" opacity="0.10" />
+        <g transform="translate(40,18) scale(1.1)">
+          <!-- hammer head -->
+          <rect x="130" y="18" width="52" height="22" rx="3" ry="3" fill="#2a1b17" stroke="#3e1f0f" />
+          <!-- handle -->
+          <rect x="90" y="30" width="10" height="80" rx="5" ry="5" fill="#3b2a24" />
+          <!-- glow behind -->
+          <circle cx="70" cy="60" r="38" fill="url(#fg)" opacity="0.95" />
+        </g>
+      </svg>
     </div>
-  </div>
 
-  <div class="desc">
-    <p class="flavor">Consuming your grenade unleashes an ignition in an area around yourself.</p>
-    <div class="divider"></div>
-
-    <div class="bullet">
-      <div class="icon">◆</div>
-      <p>Consuming nearby firesprites, sunspots, or enemy scorch adds subsequent ignitions (capped at 3).</p>
+    <div class="slots">
+      <div class="label">Fragment Slots (2)</div>
+      <div class="slot-icons">
+        <div class="slot">◻</div>
+        <div class="slot">◻</div>
+      </div>
     </div>
-  </div>
+
+    <div class="desc">
+      <p class="flavor">Consuming your grenade unleashes an ignition in an area around yourself.</p>
+      <div class="divider"></div>
+
+      <div class="bullet">
+        <div class="icon">◆</div>
+        <p>Consuming nearby firesprites, sunspots, or enemy scorch adds subsequent ignitions (capped at 3).</p>
+      </div>
+    </div>
 
 
 </body>
+
 </html>
